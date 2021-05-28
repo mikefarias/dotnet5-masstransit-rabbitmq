@@ -40,8 +40,12 @@ namespace dotnet5_masstransit_rabbitmq
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExemploAPI v1"));
-            }
+                app.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ExemploAPI v1");
+                        c.RoutePrefix = string.Empty;
+                    });
+        }
 
             app.UseHttpsRedirection();
             app.UseRouting();
