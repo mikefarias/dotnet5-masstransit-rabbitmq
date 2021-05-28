@@ -15,6 +15,6 @@ namespace dotnet5_masstransit_rabbitmq
 
         public decimal LimiteCredito { get; set; }
 
-        public bool Aprovada { get; set; }
+        public bool Aprovado { get; set; }
     }
 }

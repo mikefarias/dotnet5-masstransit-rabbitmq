@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace dotnet5_masstransit_rabbitmq
 {
-    public class AppplicationContext: DbContext
+    public class ApplicationContext: DbContext
     {
+
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        {
+
+        }
 
         public DbSet<Proposta> Proposta { get; set; }
 

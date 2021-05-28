@@ -8,17 +8,18 @@ namespace dotnet5_masstransit_rabbitmq
     [ApiController]
     public class PropostaController : Controller
     {
-        private readonly DbContext _context;
+        private readonly ApplicationContext _context;
 
-        public PropostaController()
+        public PropostaController(ApplicationContext context)
         {
+            _context = context;
         }
 
         [HttpPost]
-        public ActionResult CadastrarProposta([FromBody] DTOProposta proposta)
+        public ActionResult CadastrarProposta([FromBody] Proposta proposta)
         {
-            //_context.Add(proposta);
-            //_context.SaveChanges();
+            _context.Add(proposta);
+            _context.SaveChanges();
 
             return Ok();
         }
