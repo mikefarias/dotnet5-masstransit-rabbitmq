@@ -24,7 +24,7 @@ namespace dotnet5_masstransit_rabbitmq
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
 
             services.AddMvc();
             services.AddControllers();
@@ -32,9 +32,12 @@ namespace dotnet5_masstransit_rabbitmq
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExemploAPI", Version = "v1" });
             });
-            services.AddMassTransit(x =>
+            services.AddMassTransit(bus =>
             {
-                x.UsingRabbitMq();
+                bus.UsingRabbitMq((ctx, busConfigurator) =>
+                {
+                    busConfigurator.Host(Configuration.GetConnectionString("RabbitMQ"));
+                });
             });
             services.AddMassTransitHostedService();
         }
