@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace dotnet5_masstransit_rabbitmq
 {
@@ -9,19 +11,38 @@ namespace dotnet5_masstransit_rabbitmq
     public class PropostaController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly IPublishEndpoint _publish;
 
-        public PropostaController(ApplicationContext context)
+        public PropostaController(ApplicationContext context, IPublishEndpoint publish)
         {
             _context = context;
+            _publish = publish;
         }
 
         [HttpPost]
-        public ActionResult CadastrarProposta([FromBody] Proposta proposta)
+        public async Task<ActionResult> CadastrarPropostaAsync([FromBody] Proposta proposta)
         {
-            _context.Add(proposta);
-            _context.SaveChanges();
+            //_context.Add(proposta);
+            //_context.SaveChanges();
 
-            return Ok();
+            // Publicando Mensagem na Fila
+            try {
+
+                await _publish.Publish<PropostaMessage>(new
+                {
+                    Id = proposta.Id,
+                    CPF = proposta.CPF,
+                    CodigoProduto = proposta.CodigoProduto,
+                    LimiteCredito = proposta.LimiteCredito,
+                    Aprovado = proposta.Aprovado
+
+                });
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
